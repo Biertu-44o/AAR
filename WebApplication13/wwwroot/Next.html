@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Base Login</title>
+</head>
+<body>
+    <div class="container">
+    <h1>Login</h1>
+    <div>
+        <input type="hidden" id="userId" />
+        <p class="pl1">
+            Login:<br />
+        </p>
+        <input class="namel" id="userName" />
+        <p class="pl2">
+            Password:<br />
+        </p>
+        <input class="namel" id="userPassword" type="password" />
+        <div class="lbuttons">
+            <button id="saveBtn">Login</button>
+            <button id="resetBtn">Delete</button>
+            <input class="button btn" value="Registration" type="button" onclick="BlogGood()" />
+        </div>
+    </div>
+    </div>
+    <table>
+
+        <tbody>
+        </tbody>
+    </table>
+    <script>
+        // Добавление пользователя
+        async function LoginUser(userName, userPassword) {
+
+            
+
+            const response = await fetch("https://localhost:7249/api/Main/login", {
+                method: "POST",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: userName,
+                    password: userPassword
+                })
+            });
+            if (response.ok === true) {
+                const user = await response.json();
+
+            }
+            else {
+                const error = await response.json();
+                console.log(error.message);
+            }
+            location.href = 'WelcomePage.html';
+        }
+        // сброс данных формы после отправки
+        function reset() {
+            document.getElementById("userId").value =
+                document.getElementById("userName").value =
+                document.getElementById("userPassword").value = "";
+        }
+        // сброс значений формы
+        document.getElementById("resetBtn").addEventListener("click", () => reset());
+
+        // отправка формы
+        document.getElementById("saveBtn").addEventListener("click", async () => {
+
+            const name = document.getElementById("userName").value;
+            const password = document.getElementById("userPassword").value;
+            await LoginUser(name, password);
+            reset();
+        });
+
+        function BlogGood() {
+            location.href = 'Index';
+        }
+    </script>
+</body>
+</html>

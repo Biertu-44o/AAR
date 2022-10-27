@@ -1,0 +1,125 @@
+﻿@page
+@using AspNetCore.ReCaptcha
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Options
+@inject IOptions<ReCaptchaSettings> ReCaptchaSettings
+@model WebApplication13.Pages.IndexModel
+@{
+}
+
+<script>
+    function submitForm() {
+        document.forms[0].submit();
+
+    }
+</script>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Register</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Registration</h1>
+        <div>
+            <input type="hidden" id="userId" />
+            <form method="post">
+                <div asp-validation-summary="All"></div>
+
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <br>
+                    <input asp-for="Name" class="form-control" id="userSecond"  minlength="1" maxlength="12" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Login" class="control-label" ></label>
+                    <br>
+                    <input asp-for="Login" class="form-control"  minlength="1" maxlength="9" id="userName" />
+
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Password" class="control-label" ></label>
+                    <br>
+                    <input asp-for="Password" class="form-control" type="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!$%^&*_=+-]).{8,16}$" id="userPassword" minlength="8" maxlength="15" />
+                </div>
+
+                <div class="form-group">
+                    <recaptcha class-name="btn btn-primary" callback="submitForm" text="Save" />
+                </div>
+            </form>
+            <input class="button" id="baselogin" value="Base Login" type="button" onclick="Log()" />
+            <input class="button" id="safelogin" value="Safe Login" type="button" onclick="SafeLogin()" />
+            <button id="unsaveBtn">UnsafeSave</button>
+            <button id="resetBtn">Delete</button>
+        </div>
+    </div>
+
+    <table>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+
+        // Добавление пользователя небезопасно
+        async function createUserUnsafe(userName, userPassword, userSecond) {
+
+            const response = await fetch("https://localhost:7249/api/Main/unregistration", {
+                method: "POST",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: userName,
+                    password: userPassword,
+                    second: userSecond
+                })
+            });
+            if (response.ok === true) {
+                const user = await response.json();
+
+            }
+            else {
+                const error = await response.json();
+                console.log(error.message);
+            }
+            reset();
+        }
+
+        // сброс данных формы после отправки
+        function reset() {
+            document.getElementById("userId").value =
+                document.getElementById("userName").value =
+                document.getElementById("userSecond").value =
+                document.getElementById("userPassword").value = "";
+        }
+        // сброс значений формы
+        document.getElementById("resetBtn").addEventListener("click", () => reset());
+
+        // отправка небезопасной формы
+        document.getElementById("unsaveBtn").addEventListener("click", async () => {
+
+            const id = document.getElementById("userId").value;
+            const name = document.getElementById("userName").value;
+            const password = document.getElementById("userPassword").value;
+            const second = document.getElementById("userSecond").value;
+
+            await createUserUnsafe(name, password, second);
+            reset();
+        });
+        function Log()
+        {
+            location.href = 'Next.html';
+        }
+
+        function SafeLogin() {
+            location.href = 'safeLogin.html';
+        }
+        reset()
+
+    </script>
+</body>
+</html>

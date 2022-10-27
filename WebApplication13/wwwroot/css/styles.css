@@ -1,0 +1,113 @@
+﻿body {
+    background-color: #E0E3FF;
+}
+
+h1 {
+    color: #252EFF;
+    text-align: center;
+    margin: 36px 109px 46px 110px;
+    font-weight: 700;
+    font-size: 44px;
+}
+
+.container {
+    background-color: #FFFFFF;
+    width: 400px;
+    height: 600px;
+    border-radius: 10px;
+    margin: 170px auto 0;
+    position: relative;
+    padding: 20px;
+}
+
+.name{
+    width: 352px;
+    height: 42px;
+    border-radius: 10px;
+    position:absolute;
+    margin: 40px auto;
+}
+
+p{
+    margin: 30px 0 80px 0;
+}
+
+#userSecond{
+    top: 140px;
+}
+
+#userName{
+    top: 240px;
+}
+
+#userPassword{
+    top: 340px;
+}
+
+button {
+    width: 177px;
+    height: 42px;
+    border-radius: 15px;
+    margin-top: 40px;
+    background-color: #252EFF;
+    color: white;
+}
+
+.button {
+    width: 177px;
+    height: 42px;
+    border-radius: 15px;
+    bottom: 10px;
+    background: #5E64FF;
+    color: white;
+}
+
+#baselogin{
+    position:absolute;
+    bottom: 50px;
+}
+
+#safelogin {
+    position: absolute;
+    bottom: 50px;
+    left: 200px;
+}
+
+.namel {
+    width: 352px;
+    height: 42px;
+    border-radius: 10px;
+    position: absolute;
+    margin: 40px auto;
+}
+
+.pl1{
+    position: absolute;
+    top: 220px;
+}
+
+.pl2 {
+    position: absolute;
+    top: 320px;
+}
+
+.lbuttons {
+    position: absolute;
+    top: 450px;
+}
+
+.btn{
+    margin-top: 15px;
+}
+
+b{
+    background: #252EFF;
+    margin-top: 50px;
+}
+input:invalid:not(:placeholder-shown) {
+    border-color: red;
+}
+
+input:valid:not(:placeholder-shown) {
+    border-color: green;
+}

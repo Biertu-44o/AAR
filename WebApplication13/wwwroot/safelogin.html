@@ -1,0 +1,270 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="css/styles1.css">
+    <title>Test</title>
+</head>
+<body>
+    <div class="container">
+        <div id="userInfo" style="display:none;">
+            <h1 class="littleh1">Вы вошли как: <span id="userName"></span></h1>
+            <input type="button" class="input" value="Выйти" id="logOut" />
+        </div>
+        <div id="loginForm">
+
+            <h1>Вход на сайт</h1>
+            <label>Введите Login</label><br />
+            <input type="email" id="emailLogin" /> <br /><br />
+            <label>Введите пароль</label><br />
+            <input type="password" id="passwordLogin" /><br /><br />
+            <input type="submit" class="input" id="submitLogin" value="Логин" />
+            <input type="submit" class="input" id="reg" value="Регистрация" onclick="Reg()" />
+        </div>
+        <div id="Bottons" style="display:none;">
+            <input type="submit" class="input" id="getDataByLogin" value="Данные по логину" />
+            <input type="submit" class="input" id="getDataByRole" value="Данные по роли" />   
+        </div>
+        <div>
+            
+        </div>
+    </div>
+        <div id="table" align = "center" style="display:none;">
+            <table>
+                <thead><tr><th>Login</th><th>Name</th><th></th></tr></thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <script>
+
+            function Reg() {
+                location.href = 'Index';
+            }
+
+            var tokenKey = "accessToken";
+            // отпавка запроса к контроллеру AccountController для получения токена
+            async function getTokenAsync() {
+
+                // получаем данные формы и фомируем объект для отправки
+                const formData = new FormData();
+                formData.append("grant_type", "password");
+                formData.append("username", document.getElementById("emailLogin").value);
+                formData.append("password", document.getElementById("passwordLogin").value);
+
+                // отправляет запрос и получаем ответ
+                const response = await fetch("/token", {
+                    method: "POST",
+                    headers: { "Accept": "application/json" },
+                    body: formData
+                });
+                // получаем данные
+                const data = await response.json();
+
+                // если запрос прошел нормально
+                if (response.ok === true) {
+
+                    // изменяем содержимое и видимость блоков на странице
+                    document.getElementById("userName").innerText = data.username;
+                    document.getElementById("userInfo").style.display = "block";
+                    document.getElementById("loginForm").style.display = "none";
+                    document.getElementById("Bottons").style.display = "block";
+                    
+                    
+                    // сохраняем в хранилище sessionStorage токен доступа
+                    sessionStorage.setItem(tokenKey, data.access_token);
+                    getData("/api/values/createsession");
+                    Admin();
+                    console.log(data.access_token);
+                }
+                else {
+                    // если произошла ошибка, из errorText получаем текст ошибки
+                    console.log("Error: ", response.status, data.errorText);
+                }
+            };
+            // отправка запроса к контроллеру ValuesController
+            async function getData(url) {
+                const token = sessionStorage.getItem(tokenKey);
+
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: {
+                        "Accept": "application/json",
+                        "Authorization": "Bearer " + token  // передача токена в заголовке
+                    }
+                });
+                if (response.ok === true) {
+
+                    const data = await response.json();
+                    alert(data)
+                }
+                else
+                    console.log("Status: ", response.status);
+            };
+
+            // получаем токен
+            document.getElementById("submitLogin").addEventListener("click", e => {
+
+                e.preventDefault();
+                getTokenAsync();
+            });
+
+            // условный выход - просто удаляем токен и меняем видимость блоков
+            document.getElementById("logOut").addEventListener("click", e => {
+
+                e.preventDefault();
+                document.getElementById("userName").innerText = "";
+                document.getElementById("userInfo").style.display = "none";
+                document.getElementById("loginForm").style.display = "block";
+                document.getElementById("table").style.display = "none";
+                document.getElementById("Bottons").style.display = "none";
+                sessionStorage.removeItem(tokenKey);
+            });
+
+
+            // кнопка получения имя пользователя  - /api/values/getlogin
+            document.getElementById("getDataByLogin").addEventListener("click", e => {
+
+                e.preventDefault();
+                getData("/api/values/getlogin");
+            });
+
+            // кнопка получения роли  - /api/values/getrole
+            document.getElementById("getDataByRole").addEventListener("click", e => {
+
+                e.preventDefault();
+                getData("/api/values/getrole");
+            });
+
+
+
+            async function getSession() {
+                if (sessionStorage.getItem(tokenKey)) {
+                    const token = sessionStorage.getItem(tokenKey);
+
+                    const response = await fetch("/api/values/getsession", {
+                        method: "GET",
+                        headers: {
+                            "Accept": "application/json",
+                            "Authorization": "Bearer " + token  // передача токена в заголовке
+                        }
+                    });
+                    if (response.ok === true) {
+                        const data = await response.json();
+                        document.getElementById("userName").innerText = data;
+                        document.getElementById("userInfo").style.display = "block";
+                        document.getElementById("loginForm").style.display = "none";
+                        document.getElementById("Bottons").style.display = "block";
+                        Admin();
+                    }
+                    else {
+
+                        document.getElementById("userName").innerText = "";
+                        document.getElementById("userInfo").style.display = "none";
+                        document.getElementById("loginForm").style.display = "block";
+                        document.getElementById("table").style.display = "none";
+                        document.getElementById("Bottons").style.display = "none";
+                        sessionStorage.removeItem(tokenKey);
+                        console.log("Status: ", response.status);
+                    }
+                }
+            };
+            getSession();
+       
+
+            async function Admin() {
+                if (sessionStorage.getItem(tokenKey)) {
+                    
+                    const token = sessionStorage.getItem(tokenKey);
+
+                    const response = await fetch("/api/values/admin", {
+                        method: "GET",
+                        headers: {
+                            "Accept": "application/json",
+                            "Authorization": "Bearer " + token  // передача токена в заголовке
+                        }
+                    });
+                    if (response.ok === true) {
+
+                        const response = await fetch("/api/values/table", {
+                            method: "GET",
+                            headers: {
+                                "Accept": "application/json",
+                                "Authorization": "Bearer " + token  // передача токена в заголовке
+                            }
+                        });
+
+                        // если запрос прошел нормально
+                        if (response.ok === true) {
+
+                                // получаем данные
+                                document.getElementById("table").style.display = "block";
+                                const users = await response.json();
+                                const rows = document.querySelector("tbody");
+                                // добавляем полученные элементы в таблицу
+                                users.forEach(user => rows.append(row(user)));
+                            
+                        }
+
+                    }
+                    else {
+
+                        console.log("Status: ", response.status);
+                    }
+                }
+            };
+
+            function row(user) {
+
+                const tr = document.createElement("tr");
+                tr.setAttribute("data-rowid", user.name);
+
+                const nameTd = document.createElement("td");
+                nameTd.append(user.name);
+                tr.append(nameTd);
+
+                const SecondTd = document.createElement("td");
+                SecondTd.append(user.second);
+                tr.append(SecondTd);
+
+
+                const linksTd = document.createElement("td");
+
+                const removeLink = document.createElement("button");
+                removeLink.append("Delete");
+                removeLink.addEventListener("click", async () => await deleteUser(user.name));
+                linksTd.append(removeLink);
+
+                tr.appendChild(linksTd);
+                return tr;
+            }
+
+            async function deleteUser(name) {
+                const token = sessionStorage.getItem(tokenKey);
+                const formData = new FormData();
+                formData.append("grant_type", "password");
+                formData.append("username", name);
+                formData.append("password", name);
+                const response = await fetch("/del", {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                     "Authorization": "Bearer " + token
+},
+                    body: formData
+                })
+                if (response.ok === true) {
+                    const user = await response.json();
+                    document.querySelector(`tr[data-rowid='${user.name}']`).remove();
+                }
+                else {
+                    const error = await response.json();
+                    console.log(error.message);
+                }
+               
+            }
+
+
+        </script>
+</body>
+</html>

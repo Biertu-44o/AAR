@@ -1,0 +1,34 @@
+﻿body {
+    background-color: #E0E3FF;
+}
+
+h1 {
+    color: #252EFF;
+    text-align: center;
+    margin: 36px 109px 46px 110px;
+    font-weight: 700;
+    font-size: 44px;
+}
+
+.container {
+    background-color: #FFFFFF;
+    width: 400px;
+    height: 600px;
+    border-radius: 10px;
+    margin: 170px auto 0;
+    position: relative;
+    padding: 20px;
+}
+
+.input {
+    width: 177px;
+    height: 42px;
+    border-radius: 15px;
+    margin-top: 40px;
+    background-color: #252EFF;
+    color: white;
+}
+
+.littleh1 {
+    font-size: 25px;
+}
