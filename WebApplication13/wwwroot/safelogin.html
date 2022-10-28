@@ -118,7 +118,9 @@
                 document.getElementById("loginForm").style.display = "block";
                 document.getElementById("table").style.display = "none";
                 document.getElementById("Bottons").style.display = "none";
+                getData("/api/values/deletesession");
                 sessionStorage.removeItem(tokenKey);
+
             });
 
 

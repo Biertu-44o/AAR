@@ -9,6 +9,10 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using static System.Collections.Specialized.BitVector32;
+using NuGet.Common;
+using NuGet.Protocol;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 
 namespace TokenApp.Controllers
 {
@@ -26,12 +30,20 @@ namespace TokenApp.Controllers
         [Route("getlogin")]
         public IActionResult GetLogin()
         {
+            if (!Check_JWT_table())
+            {
+                return BadRequest();
+            }
             return Ok($"Ваш логин: {User.Identity.Name}");
         }
         [Authorize]
         [Route("getrole")]
         public IActionResult GetRole()
         {
+            if (!Check_JWT_table())
+            {
+                return BadRequest();
+            }
             Users person = _db.Users.FirstOrDefault(x => x.Name == User.Identity.Name);
 
             return Ok("Ваша роль: "+Convert.ToString(person.Role));
@@ -40,6 +52,10 @@ namespace TokenApp.Controllers
         [Route("getsession")]
         public IActionResult GetSessin()
         {
+            if (!Check_JWT_table())
+            {
+                return BadRequest();
+            }
             if (HttpContext.Session.GetString(User.Identity.Name) is not null)
             {
 
@@ -48,9 +64,22 @@ namespace TokenApp.Controllers
             return BadRequest();
         }
         [Authorize]
+        [Route("deletesession")]
+        public IActionResult deletesession()
+        {
+           
+            var token = Convert.ToString(Request.Headers["Authorization"]);
+            token=token.Remove(0, 7);
+            JWT_A_T jwt =_db.JWT_A_T.Find(token);
+            _db.JWT_A_T.Remove(jwt);
+            _db.SaveChanges(); 
+            return Ok();
+        }
+        [Authorize]
         [Route("createsession")]
         public IActionResult CreateSessin()
-        { 
+        {   
+
             HttpContext.Session.Set<string>(Convert.ToString(User.Identity.Name), User.Identity.Name);
             return Ok();
         }
@@ -58,6 +87,10 @@ namespace TokenApp.Controllers
         [Route("admin")]
         public IActionResult admin()
         {
+            if (!Check_JWT_table())
+            {
+                return BadRequest();
+            }
             Users person = _db.Users.FirstOrDefault(x => x.Name == User.Identity.Name);
             try
             {
@@ -88,8 +121,18 @@ namespace TokenApp.Controllers
             }
            
         }
-
-
+        [Authorize]
+        private bool Check_JWT_table()
+        {
+            var token = Convert.ToString(Request.Headers["Authorization"]);
+            token = token.Remove(0, 7);
+            JWT_A_T jwt = _db.JWT_A_T.Find(token);
+            if(jwt is not null)
+            {
+                return true;
+            }
+            return false;
+        } 
 
      
 

@@ -71,9 +71,13 @@ namespace TokenApp.Controllers
                 access_token = encodedJwt,
                 username = identity.Name
             };
-
+            JWT_A_T jWT_A_T = new JWT_A_T();
+            jWT_A_T.Token = encodedJwt;
+            _db.JWT_A_T.AddAsync(jWT_A_T);
+            _db.SaveChangesAsync();
             return Json(response);
         }
+
         private ClaimsIdentity GetIdentity(string username, string password)
         {
            

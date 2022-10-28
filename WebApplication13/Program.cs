@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder();
 
-string connection = "Server=(localdb)\\mssqllocaldb;Database=tESTbD;Trusted_Connection=True;";
+string connection = "Server=(localdb)\\mssqllocaldb;Database=SecondTestDB;Trusted_Connection=True;";
 
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(connection));
