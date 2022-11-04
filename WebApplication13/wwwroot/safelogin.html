@@ -7,35 +7,34 @@
 </head>
 <body>
     <div class="container">
-        <div id="userInfo" style="display:none;">
-            <h1 class="littleh1">Вы вошли как: <span id="userName"></span></h1>
+        <div id="userInfo" style="display:none;>
+            <h1 class="littleh1">Hello, <span id="userName"></span></h1>
             <input type="button" class="input" value="Выйти" id="logOut" />
         </div>
         <div id="loginForm">
 
-            <h1>Вход на сайт</h1>
-            <label>Введите Login</label><br />
-            <input type="email" id="emailLogin" /> <br /><br />
-            <label>Введите пароль</label><br />
-            <input type="password" id="passwordLogin" /><br /><br />
-            <input type="submit" class="input" id="submitLogin" value="Логин" />
-            <input type="submit" class="input" id="reg" value="Регистрация" onclick="Reg()" />
+            <h1>Login</h1>
+            <label>Username:</label>
+            <input id="emailLogin" required /> <br /><br />
+            <label>Password:</label>
+            <input type="password" required id="passwordLogin" /><br /><br />
+            <input type="submit" class="input" id="submitLogin" value="Login" />
+            <input type="submit" class="input" id="reg" value="Registration" onclick="Reg()" />
         </div>
         <div id="Bottons" style="display:none;">
-            <input type="submit" class="input" id="getDataByLogin" value="Данные по логину" />
-            <input type="submit" class="input" id="getDataByRole" value="Данные по роли" />   
+            <input type="submit" class="input" id="getDataByLogin" value="About your Login" />
+            <input type="submit" class="input" id="getDataByRole" value="About your Role" />
         </div>
-        <div>
-            
-        </div>
+        
+            <div class="table" id="table" align="center" style="display:none;">
+                <table>
+                    <thead><tr><th>Login</th><th>Name</th><th></th></tr></thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        
     </div>
-        <div id="table" align = "center" style="display:none;">
-            <table>
-                <thead><tr><th>Login</th><th>Name</th><th></th></tr></thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
         <script>
 
             function Reg() {
@@ -108,10 +107,10 @@
                 e.preventDefault();
                 getTokenAsync();
             });
-
+            var bodyRef = document.getElementById('table').getElementsByTagName('tbody')[0];
             // условный выход - просто удаляем токен и меняем видимость блоков
             document.getElementById("logOut").addEventListener("click", e => {
-
+                bodyRef.innerHTML = '';
                 e.preventDefault();
                 document.getElementById("userName").innerText = "";
                 document.getElementById("userInfo").style.display = "none";
@@ -197,9 +196,12 @@
                         // если запрос прошел нормально
                         if (response.ok === true) {
 
+                                
                                 // получаем данные
                                 document.getElementById("table").style.display = "block";
+                                
                                 const users = await response.json();
+
                                 const rows = document.querySelector("tbody");
                                 // добавляем полученные элементы в таблицу
                                 users.forEach(user => rows.append(row(user)));

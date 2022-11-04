@@ -12,8 +12,8 @@ h1 {
 
 .container {
     background-color: #FFFFFF;
-    width: 400px;
-    height: 600px;
+    width: 370px;
+    height: 300px;
     border-radius: 10px;
     margin: 170px auto 0;
     position: relative;
@@ -31,4 +31,16 @@ h1 {
 
 .littleh1 {
     font-size: 25px;
+}
+
+.table {
+    width: 170px;
+    height: 100px;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    margin: 36px 109px 46px 110px;
+    position: relative;
+    border: 2px solid #ccc;
+    border-collapse: collapse;
 }
