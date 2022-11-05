@@ -21,20 +21,20 @@ namespace TokenApp.Controllers
         }
         [Authorize]
         [HttpPost("/del")]
-        public IActionResult del(string username, string password)
+        public async Task<IActionResult> del(string username, string password)
         {
             try
             {
-                Users person = _db.Users.FirstOrDefault(x => x.Name == User.Identity.Name);
+                Users person = await _db.Users.SingleOrDefaultAsync(x => x.Name == User.Identity.Name);
 
                 if (person.Role == "admin")
                 {
-                    Users user = _db.Users.FirstOrDefault(x => x.Name == username);
+                    Users user = await _db.Users.SingleOrDefaultAsync(x => x.Name == username);
                     if (user == null) throw new Exception("Пользователь не найден");
 
                     // если пользователь найден, удаляем его
                     _db.Users.Remove(user);
-                    _db.SaveChangesAsync();
+                    await _db.SaveChangesAsync();
                     return Json(user);
                 }
                 throw new Exception("No root");

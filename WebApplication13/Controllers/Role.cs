@@ -30,9 +30,9 @@ namespace TokenApp.Controllers
         }
         [Authorize]
         [Route("getrole")]
-        public IActionResult GetRole()
+        public async Task<IActionResult> GetRole()
         {
-            Users person = _db.Users.FirstOrDefault(x => x.Name == User.Identity.Name);
+            Users person = await _db.Users.FirstOrDefaultAsync(x => x.Name == User.Identity.Name);
 
             return Ok("Ваша роль: "+Convert.ToString(person.Role));
         }
@@ -56,9 +56,9 @@ namespace TokenApp.Controllers
         }
         [Authorize]
         [Route("admin")]
-        public IActionResult admin()
+        public async Task<IActionResult> admin()
         {
-            Users person = _db.Users.FirstOrDefault(x => x.Name == User.Identity.Name);
+            Users person = await _db.Users.FirstOrDefaultAsync(x => x.Name == User.Identity.Name);
             try
             {
                 if (person.Role == "admin")
@@ -76,7 +76,7 @@ namespace TokenApp.Controllers
         [HttpGet("table")]
         public async Task<List<Users>> table()
         {
-            Users person = _db.Users.FirstOrDefault(x => x.Name == User.Identity.Name);
+            Users person = await _db.Users.FirstOrDefaultAsync(x => x.Name == User.Identity.Name);
 
             if (person.Role == "admin")
             {
